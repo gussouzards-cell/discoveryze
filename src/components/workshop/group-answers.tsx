@@ -45,7 +45,7 @@ export function GroupAnswers({ frameworkId }: GroupAnswersProps) {
   if (!questions || questions.length === 0) return null;
 
   return (
-    <div className="mt-8 grid gap-4 lg:grid-cols-2" data-tour="group-answers">
+    <div className="mt-6 sm:mt-8 grid gap-4 grid-cols-1 lg:grid-cols-2" data-tour="group-answers">
       <Card>
         <CardHeader>
           <CardTitle className="text-sm">

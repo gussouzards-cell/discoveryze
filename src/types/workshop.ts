@@ -1,5 +1,7 @@
 export type WorkshopStep = "imersao" | "ideacao" | "plano";
 
+export type BoardColumnId = "ideias" | "priorizadas" | "proximas";
+
 export type FrameworkId =
   | "imersao-basica"
   | "lean-canvas"
@@ -39,6 +41,15 @@ export interface Participant {
   name: string;
   color: string;
   isEditing?: boolean;
+}
+
+export interface BoardCard {
+  id: string;
+  columnId: BoardColumnId;
+  text: string;
+  authorId?: string;
+  votes: number;
+  createdAt: number;
 }
 
 export interface ImersaoData {
@@ -113,6 +124,8 @@ export interface WorkshopState {
   imersao: ImersaoData;
   ideacao: IdeacaoData;
   plano: PlanoData;
+  /** Cards do quadro colaborativo nativo da sala */
+  boardCards: BoardCard[];
   timerSeconds: number;
   timerRunning: boolean;
   timerInitialSeconds: number;

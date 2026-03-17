@@ -27,6 +27,11 @@ export const WORKSHOP_TOUR_STEPS: SpotlightStep[] = [
     content: "Altere seu nome e reveja o tutorial quando quiser.",
   },
   {
+    target: "[data-tour=board]",
+    title: "Quadro colaborativo",
+    content: "Mural da sala: adicione ideias, insights e frases do cliente em cartões; vote e mova entre colunas (Ideias, Priorizadas, Próximas decisões). Todos na sala veem o mesmo quadro.",
+  },
+  {
     target: "[data-tour=timer]",
     title: "Timer (timebox)",
     content: "Use play/pause para controlar o tempo. No menu (⋮) você define 5, 15 ou 30 minutos ou adiciona mais tempo.",

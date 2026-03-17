@@ -2,10 +2,11 @@
 
 import { useState, useEffect, useCallback } from "react";
 import { Button } from "@/components/ui/button";
+import { cn } from "@/lib/utils";
 
 const PADDING = 8;
 const CARD_GAP = 16;
-const CARD_HEIGHT_ESTIMATE = 280;
+const CARD_HEIGHT_ESTIMATE = 260;
 const SAFE_MARGIN = 16;
 
 export interface SpotlightStep {
@@ -34,6 +35,7 @@ export function SpotlightTour({
   const [stepIndex, setStepIndex] = useState(0);
   const [rect, setRect] = useState<DOMRect | null>(null);
   const [cardStyle, setCardStyle] = useState<{ top?: number; bottom?: number }>({});
+  const [isMobileLayout, setIsMobileLayout] = useState(false);
 
   const step = steps[stepIndex];
   const isFirst = stepIndex === 0;
@@ -43,8 +45,30 @@ export function SpotlightTour({
     if (typeof document === "undefined" || !step) return;
     const el = document.querySelector(step.target);
     const vh = window.innerHeight;
+    const vw = window.innerWidth;
+    const isMobile = vw < 640;
+    setIsMobileLayout(isMobile);
     const minTop = SAFE_MARGIN;
     const maxTop = vh - CARD_HEIGHT_ESTIMATE - SAFE_MARGIN;
+
+    // Modo mobile: card fixo no rodapé (bottom sheet) para não quebrar layout
+    if (isMobile) {
+      if (el) {
+        const r = el.getBoundingClientRect();
+        setRect(
+          new DOMRect(
+            r.left - PADDING,
+            r.top - PADDING,
+            r.width + PADDING * 2,
+            r.height + PADDING * 2
+          )
+        );
+      } else {
+        setRect(null);
+      }
+      setCardStyle({ bottom: SAFE_MARGIN });
+      return;
+    }
 
     if (el) {
       (el as HTMLElement).scrollIntoView({ behavior: "auto", block: "center" });
@@ -55,7 +79,11 @@ export function SpotlightTour({
       const fitsBelow = spaceBelow >= CARD_HEIGHT_ESTIMATE;
       const fitsAbove = spaceAbove >= CARD_HEIGHT_ESTIMATE;
 
-      if (fitsBelow) {
+      // Em telas bem pequenas, fixa o card como um "bottom sheet"
+      if (isMobile && vh < 640) {
+        const top = Math.max(minTop, vh - CARD_HEIGHT_ESTIMATE - SAFE_MARGIN);
+        setCardStyle({ top });
+      } else if (fitsBelow) {
         let top = r.bottom + CARD_GAP;
         top = Math.max(minTop, Math.min(maxTop, top));
         setCardStyle({ top });
@@ -162,18 +190,29 @@ export function SpotlightTour({
         )}
       </div>
 
-      {/* Tooltip card - fixed para sempre ficar na viewport e visível */}
+      {/* Tooltip card - fixo na viewport, com layout diferente em mobile */}
       {step && (
         <div
-          className="fixed left-1/2 z-[101] w-[calc(100vw-2rem)] max-w-sm -translate-x-1/2 pointer-events-auto sm:mx-4"
-          style={{
-            left: "50%",
-            transform: "translateX(-50%)",
-            ...(cardStyle.top != null ? { top: cardStyle.top } : {}),
-            ...(cardStyle.bottom != null ? { bottom: cardStyle.bottom } : {}),
-          }}
+          className={cn(
+            "fixed z-[101] pointer-events-auto",
+            isMobileLayout
+              ? "left-0 right-0 px-3"
+              : "left-1/2 -translate-x-1/2 w-[calc(100vw-2rem)] max-w-sm sm:mx-4"
+          )}
+          style={
+            isMobileLayout
+              ? {
+                  bottom: cardStyle.bottom ?? SAFE_MARGIN,
+                }
+              : {
+                  left: "50%",
+                  transform: "translateX(-50%)",
+                  ...(cardStyle.top != null ? { top: cardStyle.top } : {}),
+                  ...(cardStyle.bottom != null ? { bottom: cardStyle.bottom } : {}),
+                }
+          }
         >
-          <div className="rounded-xl border border-border bg-card p-4 shadow-xl max-h-[55vh] overflow-y-auto">
+          <div className="w-full rounded-xl border border-border bg-card p-4 shadow-xl max-h-[55vh] overflow-y-auto">
             <h3 className="font-semibold text-foreground text-sm sm:text-base">{step.title}</h3>
             <p className="mt-1.5 text-xs sm:text-sm text-muted-foreground">{step.content}</p>
             <div className="mt-4 flex flex-col-reverse sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-3">

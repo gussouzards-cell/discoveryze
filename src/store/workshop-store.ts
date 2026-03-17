@@ -7,6 +7,7 @@ import type {
   ImersaoData,
   IdeacaoData,
   PlanoData,
+  BoardColumnId,
 } from "@/types/workshop";
 import {
   INITIAL_IMERSAO,
@@ -54,11 +55,16 @@ type WorkshopStore = WorkshopState & {
   ) => void;
   revealGroupAnswer: (frameworkId: string, participantId: string) => void;
   revealAllGroupAnswers: (frameworkId: string) => void;
+  addBoardCard: (columnId: BoardColumnId, text: string, authorId?: string) => void;
+  moveBoardCard: (cardId: string, columnId: BoardColumnId) => void;
+  voteBoardCard: (cardId: string, delta: number) => void;
+  deleteBoardCard: (cardId: string) => void;
 };
 
 const defaultState: WorkshopState = {
   roomId: null,
   roomName: "Nova Sala",
+  boardUrl: null,
   participants: [],
   currentStep: "imersao",
   workflow: [
@@ -89,6 +95,7 @@ const defaultState: WorkshopState = {
   timerInitialSeconds: 15 * 60,
   editingParticipantId: null,
   groupAnswers: {},
+  boardCards: [],
 };
 
 export const useWorkshopStore = create<WorkshopStore>()(
@@ -286,6 +293,38 @@ export const useWorkshopStore = create<WorkshopStore>()(
             },
           };
         }),
+      addBoardCard: (columnId, text, authorId) =>
+        set((s) => ({
+          boardCards: [
+            ...s.boardCards,
+            {
+              id: crypto.randomUUID(),
+              columnId,
+              text,
+              authorId,
+              votes: 0,
+              createdAt: Date.now(),
+            },
+          ],
+        })),
+      moveBoardCard: (cardId, columnId) =>
+        set((s) => ({
+          boardCards: s.boardCards.map((c) =>
+            c.id === cardId ? { ...c, columnId } : c
+          ),
+        })),
+      voteBoardCard: (cardId, delta) =>
+        set((s) => ({
+          boardCards: s.boardCards.map((c) =>
+            c.id === cardId
+              ? { ...c, votes: Math.max(0, c.votes + delta) }
+              : c
+          ),
+        })),
+      deleteBoardCard: (cardId) =>
+        set((s) => ({
+          boardCards: s.boardCards.filter((c) => c.id !== cardId),
+        })),
     }),
     { name: STORAGE_KEY, partialize: (s) => ({ ...s, timerRunning: false }) }
   )

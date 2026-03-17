@@ -40,8 +40,8 @@ export function WorkshopContent() {
   };
 
   return (
-    <div className="flex flex-1 flex-col overflow-auto" data-tour="content-wrapper">
-      <main className="flex-1 p-6" data-tour="content">
+    <div className="flex flex-1 flex-col overflow-auto min-w-0" data-tour="content-wrapper">
+      <main className="flex-1 p-4 sm:p-6" data-tour="content">
         {(() => {
           const phaseSteps = workflowByPhase[currentPhase] ?? [];
           const step =
@@ -86,16 +86,17 @@ export function WorkshopContent() {
           );
         })()}
       </main>
-      <footer className="border-t border-border bg-card/30 px-6 py-4" data-tour="footer">
-        <div className="flex flex-wrap items-center justify-between gap-4">
-          <Button variant="outline" size="sm" onClick={handleExportMd}>
+      <footer className="border-t border-border bg-card/30 px-3 sm:px-6 py-3 sm:py-4" data-tour="footer">
+        <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center justify-between gap-3 sm:gap-4">
+          <Button variant="outline" size="sm" className="w-full sm:w-auto justify-center" onClick={handleExportMd}>
             <Download className="mr-2 h-4 w-4" />
             Exportar Markdown
           </Button>
-          <div className="flex flex-wrap items-center gap-2">
+          <div className="flex flex-col sm:flex-row flex-wrap items-stretch sm:items-center gap-2">
             <Button
               variant="outline"
               size="sm"
+              className="w-full sm:w-auto"
               onClick={() => {
                 const state = getStore.getState();
                 const prevPhase = getPrevPhase(state.currentPhase);
@@ -107,6 +108,7 @@ export function WorkshopContent() {
             </Button>
             <Button
               size="sm"
+              className="w-full sm:w-auto"
               onClick={() => {
                 const state = getStore.getState();
                 const phaseSteps = state.workflowByPhase[state.currentPhase] ?? [];
@@ -143,7 +145,7 @@ export function WorkshopContent() {
             >
               Próximo
             </Button>
-            <Button onClick={() => setArtifactsOpen(true)}>
+            <Button className="w-full sm:w-auto" onClick={() => setArtifactsOpen(true)}>
               Gerar artefatos
             </Button>
           </div>

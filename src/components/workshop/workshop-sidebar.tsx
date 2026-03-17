@@ -4,7 +4,7 @@ import { useState, useMemo } from "react";
 import { cn } from "@/lib/utils";
 import { useWorkshopStore } from "@/store/workshop-store";
 import { FRAMEWORKS, getFrameworkDefinition } from "@/lib/frameworks";
-import { Settings2 } from "lucide-react";
+import { Settings2, X } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -236,31 +236,84 @@ function WorkflowConfiguratorDialog({
   );
 }
 
-export function WorkshopSidebar() {
+interface WorkshopSidebarProps {
+  mobileOpen?: boolean;
+  onMobileClose?: () => void;
+}
+
+export function WorkshopSidebar({ mobileOpen = false, onMobileClose }: WorkshopSidebarProps = {}) {
   const [open, setOpen] = useState(false);
   const { byPhase, active, setCurrentPhase } = useWorkflow();
 
+  const handleStepClick = (phase: typeof active.phase, stepId: string) => {
+    if (!useWorkshopStore.getState().workflowByPhase[phase]) return;
+    const unlocked =
+      phase === "imersao"
+        ? true
+        : phase === "ideacao"
+          ? isPhaseComplete(useWorkshopStore.getState(), "imersao")
+          : isPhaseComplete(useWorkshopStore.getState(), "imersao") && isPhaseComplete(useWorkshopStore.getState(), "ideacao");
+    if (!unlocked) {
+      const phaseLabel = phase === "imersao" ? "Imersão" : phase === "ideacao" ? "Ideação" : "Plano de Ação";
+      toast.error(`Finalize a etapa anterior para liberar ${phaseLabel}.`);
+      return;
+    }
+    setCurrentPhase(phase, stepId);
+    onMobileClose?.();
+  };
+
   return (
-    <aside className="flex w-64 flex-col border-r border-border bg-card/50" data-tour="sidebar">
-      <div className="flex items-center justify-between gap-2 px-4 pt-4">
-        <div>
-          <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
-            Receita do discovery
-          </h2>
-          <p className="text-[11px] text-muted-foreground">
-            Passo a passo de frameworks.
-          </p>
+    <>
+      {/* Overlay no mobile */}
+      {onMobileClose && (
+        <button
+          type="button"
+          aria-label="Fechar menu"
+          className="fixed inset-0 z-20 bg-black/50 md:hidden transition-opacity"
+          style={{ opacity: mobileOpen ? 1 : 0, pointerEvents: mobileOpen ? "auto" : "none" }}
+          onClick={onMobileClose}
+        />
+      )}
+      <aside
+        className={cn(
+          "flex w-64 flex-col border-r border-border bg-card/50 flex-shrink-0 transition-transform duration-200 ease-out z-30",
+          "fixed md:relative inset-y-0 left-0 md:translate-x-0",
+          mobileOpen ? "translate-x-0" : "-translate-x-full md:translate-x-0"
+        )}
+        data-tour="sidebar"
+      >
+        <div className="flex items-center justify-between gap-2 px-4 pt-4">
+          <div className="min-w-0">
+            <h2 className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">
+              Receita do discovery
+            </h2>
+            <p className="text-[11px] text-muted-foreground">
+              Passo a passo de frameworks.
+            </p>
+          </div>
+          <div className="flex items-center gap-1">
+            {onMobileClose && (
+              <Button
+                size="icon"
+                variant="ghost"
+                className="h-7 w-7 md:hidden"
+                onClick={onMobileClose}
+                aria-label="Fechar menu"
+              >
+                <X className="h-4 w-4" />
+              </Button>
+            )}
+            <Button
+              size="icon"
+              variant="ghost"
+              className="h-7 w-7"
+              onClick={() => setOpen(true)}
+            >
+              <Settings2 className="h-4 w-4" />
+            </Button>
+          </div>
         </div>
-        <Button
-          size="icon"
-          variant="ghost"
-          className="h-7 w-7"
-          onClick={() => setOpen(true)}
-        >
-          <Settings2 className="h-4 w-4" />
-        </Button>
-      </div>
-      <nav className="mt-3 space-y-0.5 px-2 pb-4">
+        <nav className="mt-3 space-y-0.5 px-2 pb-4 overflow-auto">
         {byPhase.map(({ phase, items }) => {
           const phaseLabel =
             phase === "imersao"
@@ -313,15 +366,7 @@ export function WorkshopSidebar() {
                       key={step.id}
                       type="button"
                       title={`${def.name} — ${def.description}`}
-                      onClick={() => {
-                        if (!unlocked) {
-                          toast.error(
-                            `Finalize a etapa anterior para liberar ${phaseLabel}.`
-                          );
-                          return;
-                        }
-                        setCurrentPhase(phase, step.id);
-                      }}
+                      onClick={() => handleStepClick(phase, step.id)}
                       className={cn(
                         "flex w-full items-start gap-3 rounded-lg px-3 py-2.5 text-left text-xs transition-colors",
                         isActive
@@ -351,7 +396,8 @@ export function WorkshopSidebar() {
           );
         })}
       </nav>
-      <WorkflowConfiguratorDialog open={open} onOpenChange={setOpen} />
-    </aside>
+        <WorkflowConfiguratorDialog open={open} onOpenChange={setOpen} />
+      </aside>
+    </>
   );
 }
