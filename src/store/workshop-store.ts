@@ -64,7 +64,6 @@ type WorkshopStore = WorkshopState & {
 const defaultState: WorkshopState = {
   roomId: null,
   roomName: "Nova Sala",
-  boardUrl: null,
   participants: [],
   currentStep: "imersao",
   workflow: [
