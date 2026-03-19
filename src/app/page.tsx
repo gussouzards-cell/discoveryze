@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -13,7 +14,7 @@ import {
   DialogDescription,
 } from "@/components/ui/dialog";
 import { Label } from "@/components/ui/label";
-import { Lightbulb, Users, Link2, Clock, Layers, FileText, Zap, BookOpen, Target } from "lucide-react";
+import { Lightbulb, Users, Link2, Clock, Layers, FileText, Zap, BookOpen, Target, GraduationCap } from "lucide-react";
 import { useWorkshopStore } from "@/store/workshop-store";
 import { toast } from "sonner";
 
@@ -29,7 +30,7 @@ export default function HomePage() {
     applyPreset(preset);
     const id = crypto.randomUUID().slice(0, 8);
     setRoom(id, roomName);
-    toast.success("Sala criada! Compartilhe o link.");
+    toast.success("Sala criada! Abra o Guia PM/PO na barra do workshop para ver o manual na plataforma.");
     router.push(`/workshop?room=${id}`);
   };
 
@@ -369,6 +370,28 @@ export default function HomePage() {
               </Button>
             </CardContent>
           </Card>
+        </section>
+
+        <section className="scroll-mt-20 rounded-xl border border-primary/20 bg-gradient-to-br from-primary/8 via-card to-card p-5 sm:p-6 shadow-sm">
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <div className="flex items-start gap-4 min-w-0">
+              <div className="flex h-12 w-12 shrink-0 items-center justify-center rounded-2xl bg-primary/15 text-primary">
+                <GraduationCap className="h-6 w-6" />
+              </div>
+              <div>
+                <h2 className="text-base font-semibold text-foreground sm:text-lg">
+                  Guia PM &amp; PO na plataforma
+                </h2>
+                <p className="mt-1 max-w-xl text-sm text-muted-foreground">
+                  Manual completo com visual claro: referências, priorização, histórias, quarters, Linear/Jira,
+                  Scrum, Kanban e cascata. Abre dentro do app — use no workshop pelo botão <strong>Guia</strong>.
+                </p>
+              </div>
+            </div>
+            <Button asChild className="w-full shrink-0 sm:w-auto">
+              <Link href="/guia">Abrir guia</Link>
+            </Button>
+          </div>
         </section>
 
         <p className="mt-6 sm:mt-8 px-2 text-center text-xs sm:text-sm text-muted-foreground">

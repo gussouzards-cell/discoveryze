@@ -83,6 +83,19 @@ export interface IdeacaoData {
   riceImpact: string;
   riceConfidence: string;
   riceEffort: string;
+  /** Kano: requisitos por categoria */
+  kanoBasico: string;
+  kanoDesempenho: string;
+  kanoEncantador: string;
+  /** Opportunity Solution Tree */
+  ostObjetivo: string;
+  ostOportunidades: string;
+  ostSolucoes: string;
+  /** Impact Mapping */
+  impactGoal: string;
+  impactActors: string;
+  impactImpacts: string;
+  impactDeliverables: string;
 }
 
 export interface PlanoData {
@@ -163,6 +176,16 @@ export const INITIAL_IDEACAO: IdeacaoData = {
   riceImpact: "",
   riceConfidence: "",
   riceEffort: "",
+  kanoBasico: "",
+  kanoDesempenho: "",
+  kanoEncantador: "",
+  ostObjetivo: "",
+  ostOportunidades: "",
+  ostSolucoes: "",
+  impactGoal: "",
+  impactActors: "",
+  impactImpacts: "",
+  impactDeliverables: "",
 };
 
 export const INITIAL_PLANO: PlanoData = {

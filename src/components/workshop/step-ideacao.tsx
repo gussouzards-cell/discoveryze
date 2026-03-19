@@ -10,6 +10,7 @@ import { ThumbsUp, Plus, Trash2 } from "lucide-react";
 import { useWorkshopStore } from "@/store/workshop-store";
 import { toast } from "sonner";
 import type { FrameworkId } from "@/types/workshop";
+import { LeanCanvasGuided } from "./lean-canvas-guided";
 
 export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
   const ideacao = useWorkshopStore((s) => s.ideacao);
@@ -18,6 +19,13 @@ export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
   const voteFuncionalidade = useWorkshopStore((s) => s.voteFuncionalidade);
   const updateLeanCanvas = useWorkshopStore((s) => s.updateLeanCanvas);
   const [newFeature, setNewFeature] = useState("");
+
+  const removeFuncionalidade = (id: string) => {
+    setIdeacao((prev) => ({
+      ...prev,
+      funcionalidades: prev.funcionalidades.filter((f) => f.id !== id),
+    }));
+  };
 
   const handleAddFeature = () => {
     const t = newFeature.trim();
@@ -44,15 +52,18 @@ export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
           <CardHeader>
             <CardTitle>Story Mapping (simplificado)</CardTitle>
             <CardDescription>
-              Uma versão rápida para workshops: 1) Atividades macro 2) Passos
-              detalhados.
+              <strong>1º</strong> defina a jornada em etapas grandes; <strong>2º</strong> quebre em histórias/passos
+              por etapa. Só depois marque o que entra no MVP.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
               <Label htmlFor="storyAtividades">
-                Atividades macro (linha de cima)
+                1. Atividades macro (linha de cima)
               </Label>
+              <p className="text-[11px] text-muted-foreground">
+                Ex.: Descobrir → Avaliar → Comprar → Usar. Poucas palavras por etapa.
+              </p>
               <Textarea
                 id="storyAtividades"
                 placeholder="Ex: Descobrir → Comparar → Comprar → Usar → Renovar"
@@ -64,8 +75,11 @@ export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
             </div>
             <div className="space-y-2">
               <Label htmlFor="storyPassos">
-                Passos / histórias (linha de baixo)
+                2. Passos / histórias (linha de baixo)
               </Label>
+              <p className="text-[11px] text-muted-foreground">
+                Para cada atividade, liste ações ou histórias. Depois o time corta o que não entra no MVP.
+              </p>
               <Textarea
                 id="storyPassos"
                 placeholder="Liste passos por atividade. Ex:\nDescobrir: buscar, filtrar\nComparar: ver detalhes, favoritar\n..."
@@ -82,7 +96,6 @@ export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
   }
 
   if (frameworkId === "funcionalidades-votacao") {
-    // mantém a parte de funcionalidades (sem o canvas)
     return (
       <div className="space-y-6">
         <div>
@@ -162,7 +175,8 @@ export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
           <CardHeader>
             <CardTitle>RICE</CardTitle>
             <CardDescription>
-              Preencha de forma simples (pode ser escala 1–5 ou números absolutos).
+              Ordem útil: <strong>Reach</strong> → <strong>Impact</strong> → <strong>Confidence</strong> →{" "}
+              <strong>Effort</strong>. Estime rápido; o score é apoio à conversa, não verdade absoluta.
             </CardDescription>
           </CardHeader>
           <CardContent className="grid gap-4 sm:grid-cols-2">
@@ -208,97 +222,215 @@ export function StepIdeacao({ frameworkId }: { frameworkId: FrameworkId }) {
     );
   }
 
-  const removeFuncionalidade = (id: string) => {
-    setIdeacao((prev) => ({
-      ...prev,
-      funcionalidades: prev.funcionalidades.filter((f) => f.id !== id),
-    }));
-  };
+  if (frameworkId === "kano") {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Ideação</h2>
+          <p className="text-muted-foreground">
+            Kano: classifique requisitos ou funcionalidades em básicos, desempenho e encantadores.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Kano</CardTitle>
+            <CardDescription>
+              Liste itens em cada categoria (uma linha ou bullet por item).
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="kanoB">Básicos (must-have)</Label>
+              <Textarea
+                id="kanoB"
+                placeholder="Ex: login seguro, exportar relatório..."
+                value={ideacao.kanoBasico}
+                onChange={(e) => setIdeacao({ kanoBasico: e.target.value })}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="kanoD">Desempenho (quanto melhor, mais satisfeito)</Label>
+              <Textarea
+                id="kanoD"
+                placeholder="Ex: tempo de resposta, quantidade de filtros..."
+                value={ideacao.kanoDesempenho}
+                onChange={(e) => setIdeacao({ kanoDesempenho: e.target.value })}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="kanoE">Encantadores (surpresa positiva)</Label>
+              <Textarea
+                id="kanoE"
+                placeholder="Ex: atalho que poucos esperam, personalização..."
+                value={ideacao.kanoEncantador}
+                onChange={(e) => setIdeacao({ kanoEncantador: e.target.value })}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (frameworkId === "opportunity-solution-tree") {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Ideação</h2>
+          <p className="text-muted-foreground">
+            Opportunity Solution Tree: objetivo → oportunidades → soluções possíveis.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Opportunity Solution Tree</CardTitle>
+            <CardDescription>
+              Comece pelo resultado desejado, depois oportunidades e ideias de solução.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="ostObj">Objetivo / resultado desejado</Label>
+              <Textarea
+                id="ostObj"
+                placeholder="Ex: Aumentar retenção de clientes enterprise em 15% no trimestre"
+                value={ideacao.ostObjetivo}
+                onChange={(e) => setIdeacao({ ostObjetivo: e.target.value })}
+                rows={2}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ostOpp">Oportunidades (problemas ou gaps a explorar)</Label>
+              <Textarea
+                id="ostOpp"
+                placeholder="Liste oportunidades, uma por linha ou em bullets"
+                value={ideacao.ostOportunidades}
+                onChange={(e) => setIdeacao({ ostOportunidades: e.target.value })}
+                rows={5}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="ostSol">Soluções candidatas (por oportunidade ou geral)</Label>
+              <Textarea
+                id="ostSol"
+                placeholder="Ideias de produto, fluxos ou features que endereçam as oportunidades"
+                value={ideacao.ostSolucoes}
+                onChange={(e) => setIdeacao({ ostSolucoes: e.target.value })}
+                rows={5}
+                className="resize-none"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (frameworkId === "impact-mapping") {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Ideação</h2>
+          <p className="text-muted-foreground">
+            Impact Mapping: ligar objetivo de negócio a atores, impactos e entregáveis.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Impact Mapping</CardTitle>
+            <CardDescription>
+              Do objetivo aos entregáveis que movem comportamento dos atores.
+            </CardDescription>
+          </CardHeader>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label htmlFor="imGoal">Objetivo de negócio</Label>
+              <Textarea
+                id="imGoal"
+                placeholder="Ex: Reduzir churn de contas pagantes"
+                value={ideacao.impactGoal}
+                onChange={(e) => setIdeacao({ impactGoal: e.target.value })}
+                rows={2}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="imActors">Atores (quem pode ajudar ou bloquear)</Label>
+              <Textarea
+                id="imActors"
+                placeholder="Ex: admin do cliente, PM interno, suporte..."
+                value={ideacao.impactActors}
+                onChange={(e) => setIdeacao({ impactActors: e.target.value })}
+                rows={3}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="imImpacts">Impactos desejados (comportamentos)</Label>
+              <Textarea
+                id="imImpacts"
+                placeholder="Ex: usar feature X toda semana, convidar colegas..."
+                value={ideacao.impactImpacts}
+                onChange={(e) => setIdeacao({ impactImpacts: e.target.value })}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="imDeliv">Entregáveis (o que o produto oferece)</Label>
+              <Textarea
+                id="imDeliv"
+                placeholder="Features, integrações, conteúdos que sustentam os impactos"
+                value={ideacao.impactDeliverables}
+                onChange={(e) => setIdeacao({ impactDeliverables: e.target.value })}
+                rows={4}
+                className="resize-none"
+              />
+            </div>
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
+
+  if (frameworkId === "lean-canvas") {
+    return (
+      <div className="space-y-6">
+        <div>
+          <h2 className="text-2xl font-semibold tracking-tight">Ideação</h2>
+          <p className="text-muted-foreground">
+            Lean Canvas em <strong>ordem de workshop</strong>: um bloco por vez, com dicas para o facilitador.
+            Você pode alternar para a visão completa quando quiser revisar.
+          </p>
+        </div>
+        <Card>
+          <CardHeader>
+            <CardTitle>Lean Canvas (guiado)</CardTitle>
+            <CardDescription>
+              Seguindo a sequência clássica: problema → segmento → proposta de valor → solução → canais →
+              receita → custo → métricas → vantagem.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <LeanCanvasGuided leanCanvas={ideacao.leanCanvas} updateLeanCanvas={updateLeanCanvas} />
+          </CardContent>
+        </Card>
+      </div>
+    );
+  }
 
   return (
-    <div className="space-y-8">
-      <div>
-        <h2 className="text-2xl font-semibold tracking-tight">Ideação</h2>
-        <p className="text-muted-foreground">
-          Lean Canvas e lista de funcionalidades com votação.
-        </p>
-      </div>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Lean Canvas</CardTitle>
-          <CardDescription>Preencha os blocos do canvas.</CardDescription>
-        </CardHeader>
-        <CardContent>
-          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
-            {ideacao.leanCanvas.map((item) => (
-              <div key={item.id} className="space-y-2">
-                <Label className="text-xs text-muted-foreground">{item.title}</Label>
-                <Textarea
-                  placeholder={item.title}
-                  value={item.content}
-                  onChange={(e) => updateLeanCanvas(item.id, e.target.value)}
-                  rows={2}
-                  className="resize-none text-sm"
-                />
-              </div>
-            ))}
-          </div>
-        </CardContent>
-      </Card>
-
-      <Card>
-        <CardHeader>
-          <CardTitle>Funcionalidades</CardTitle>
-          <CardDescription>Liste e vote nas prioridades.</CardDescription>
-        </CardHeader>
-        <CardContent className="space-y-4">
-          <div className="flex gap-2">
-            <Input
-              placeholder="Nova funcionalidade..."
-              value={newFeature}
-              onChange={(e) => setNewFeature(e.target.value)}
-              onKeyDown={(e) => e.key === "Enter" && handleAddFeature()}
-            />
-            <Button type="button" onClick={handleAddFeature} size="icon">
-              <Plus className="h-4 w-4" />
-            </Button>
-          </div>
-          <ul className="space-y-2">
-            {ideacao.funcionalidades.map((f) => (
-              <li
-                key={f.id}
-                className="flex items-center justify-between rounded-lg border border-border bg-muted/30 px-3 py-2"
-              >
-                <span className="text-sm font-medium">{f.title}</span>
-                <div className="flex items-center gap-1">
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    className="h-8 w-8 p-0"
-                    onClick={() => voteFuncionalidade(f.id, 1)}
-                  >
-                    <ThumbsUp className="h-4 w-4" />
-                  </Button>
-                  <span className="min-w-[1.5rem] text-center text-sm text-muted-foreground">
-                    {f.votes}
-                  </span>
-                  <Button
-                    type="button"
-                    size="sm"
-                    variant="ghost"
-                    className="h-8 w-8 p-0 text-muted-foreground hover:text-destructive"
-                    onClick={() => removeFuncionalidade(f.id)}
-                  >
-                    <Trash2 className="h-4 w-4" />
-                  </Button>
-                </div>
-              </li>
-            ))}
-          </ul>
-        </CardContent>
-      </Card>
+    <div className="rounded-lg border border-dashed border-border p-6 text-sm text-muted-foreground">
+      O framework <strong>{frameworkId}</strong> ainda não tem formulário dedicado nesta etapa.
+      Use o configurador de roteiro (engrenagem na sidebar) para ajustar o workshop.
     </div>
   );
 }

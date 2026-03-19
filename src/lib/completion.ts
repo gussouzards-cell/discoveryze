@@ -26,7 +26,11 @@ export function isFrameworkComplete(state: WorkshopState, id: FrameworkId) {
     case "funcionalidades-votacao":
       return state.ideacao.funcionalidades.length > 0;
     case "kano":
-      return filled(state.ideacao.riceImpact); // reaproveitando campo numérico para não poluir demais
+      return (
+        filled(state.ideacao.kanoBasico) &&
+        filled(state.ideacao.kanoDesempenho) &&
+        filled(state.ideacao.kanoEncantador)
+      );
     case "rice":
       return (
         filled(state.ideacao.riceReach) &&
@@ -35,9 +39,18 @@ export function isFrameworkComplete(state: WorkshopState, id: FrameworkId) {
         filled(state.ideacao.riceEffort)
       );
     case "opportunity-solution-tree":
-      return filled(state.ideacao.storyMapAtividades);
+      return (
+        filled(state.ideacao.ostObjetivo) &&
+        filled(state.ideacao.ostOportunidades) &&
+        filled(state.ideacao.ostSolucoes)
+      );
     case "impact-mapping":
-      return filled(state.ideacao.storyMapPassos);
+      return (
+        filled(state.ideacao.impactGoal) &&
+        filled(state.ideacao.impactActors) &&
+        filled(state.ideacao.impactImpacts) &&
+        filled(state.ideacao.impactDeliverables)
+      );
     case "plano-acao":
       return (
         filled(state.plano.mvp) &&

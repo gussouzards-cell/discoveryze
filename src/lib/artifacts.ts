@@ -74,6 +74,22 @@ export function generatePRD(state: WorkshopState): string {
 ## 2. Lean Canvas
 ${canvas || "_Não preenchido._"}
 
+## 2.1 Kano (se preenchido)
+- **Básicos:** ${ideacao.kanoBasico || "_—_"}
+- **Desempenho:** ${ideacao.kanoDesempenho || "_—_"}
+- **Encantadores:** ${ideacao.kanoEncantador || "_—_"}
+
+## 2.2 Opportunity Solution Tree (se preenchido)
+- **Objetivo:** ${ideacao.ostObjetivo || "_—_"}
+- **Oportunidades:** ${ideacao.ostOportunidades || "_—_"}
+- **Soluções:** ${ideacao.ostSolucoes || "_—_"}
+
+## 2.3 Impact Mapping (se preenchido)
+- **Objetivo:** ${ideacao.impactGoal || "_—_"}
+- **Atores:** ${ideacao.impactActors || "_—_"}
+- **Impactos:** ${ideacao.impactImpacts || "_—_"}
+- **Entregáveis:** ${ideacao.impactDeliverables || "_—_"}
+
 ## 3. Funcionalidades priorizadas
 ${ideacao.funcionalidades
   .sort((a, b) => b.votes - a.votes)

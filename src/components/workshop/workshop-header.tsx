@@ -1,6 +1,7 @@
 "use client";
 
 import { useState } from "react";
+import Link from "next/link";
 import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -15,8 +16,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import Link from "next/link";
-import { Play, Pause, MoreVertical, Share2, ArrowLeft, BookOpen, Menu, LayoutTemplate } from "lucide-react";
+import { Play, Pause, MoreVertical, Share2, ArrowLeft, BookOpen, Menu, LayoutTemplate, GraduationCap } from "lucide-react";
 import { useWorkshopStore } from "@/store/workshop-store";
 import { useTimer, formatTime } from "@/hooks/use-timer";
 import { useLocalParticipant, setLocalParticipantName } from "@/hooks/use-local-participant";
@@ -151,6 +151,12 @@ export function WorkshopHeader({ onOpenTutorial, onOpenSidebar, onOpenBoard }: W
       </div>
 
       <div className="flex items-center gap-2 shrink-0">
+        <Button size="sm" variant="outline" className="h-8 gap-1 shrink-0" asChild title="Guia na plataforma">
+          <Link href={roomId ? `/guia?room=${encodeURIComponent(roomId)}` : "/guia"}>
+            <GraduationCap className="h-4 w-4" />
+            <span className="hidden sm:inline">Guia</span>
+          </Link>
+        </Button>
         {onOpenBoard && (
           <Button
             size="sm"
@@ -164,6 +170,7 @@ export function WorkshopHeader({ onOpenTutorial, onOpenSidebar, onOpenBoard }: W
           </Button>
         )}
       </div>
+
 
       <div className="flex items-center gap-2 shrink-0" data-tour="timer">
         <Card className="flex flex-col gap-1 border-border px-2 sm:px-3 py-1.5 sm:py-2 min-w-0 w-[100px] sm:min-w-[140px] md:min-w-[180px]">

@@ -325,6 +325,19 @@ export const useWorkshopStore = create<WorkshopStore>()(
           boardCards: s.boardCards.filter((c) => c.id !== cardId),
         })),
     }),
-    { name: STORAGE_KEY, partialize: (s) => ({ ...s, timerRunning: false }) }
+    {
+      name: STORAGE_KEY,
+      partialize: (s) => ({ ...s, timerRunning: false }),
+      merge: (persisted, current) => {
+        const p = persisted as Partial<WorkshopState> | undefined;
+        if (!p) return current;
+        return {
+          ...current,
+          ...p,
+          ideacao: { ...INITIAL_IDEACAO, ...p.ideacao },
+          boardCards: Array.isArray(p.boardCards) ? p.boardCards : current.boardCards,
+        };
+      },
+    }
   )
 );

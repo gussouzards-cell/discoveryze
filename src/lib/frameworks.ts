@@ -21,7 +21,7 @@ export const FRAMEWORKS: FrameworkDefinition[] = [
     stepKind: "ideacao",
     why: "Dar uma visão 360º rápida do produto, alinhando problema, segmentos, solução e modelo de negócio em uma página.",
     when: "Depois de Imersão/JTBD, antes de detalhar funcionalidades e priorização.",
-    how: "Comece por Problema/Segmentos/Proposta de valor e só depois preencha Solução, Canais, Custos e Receitas, sem buscar perfeição.",
+    how: "Na plataforma o canvas é guiado nessa ordem: Problema → Segmento → Proposta de valor → Solução → Canais → Receita → Custo → Métricas → Vantagem. Use as dicas de facilitador em cada passo; depois revise tudo na visão completa.",
     outcome:
       "Um canvas que cabe em uma tela e que qualquer stakeholder entende para alinhar a visão do produto.",
   },

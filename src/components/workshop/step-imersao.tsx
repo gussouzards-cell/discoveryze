@@ -25,13 +25,16 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
           <CardHeader>
             <CardTitle>JTBD</CardTitle>
             <CardDescription>
-              Escreva como se fosse a frase: “Quando ___, eu quero ___, para
-              ___”.
+              Siga a ordem: <strong>1) Job</strong> → <strong>2) Contexto</strong> →{" "}
+              <strong>3) Sucesso</strong>. Monta a frase: “Quando ___, eu quero ___, para ___”.
             </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label htmlFor="jtbdJob">Job (o que a pessoa quer fazer)</Label>
+              <Label htmlFor="jtbdJob">1. Job (o que a pessoa quer fazer)</Label>
+              <p className="text-[11px] text-muted-foreground">
+                Primeiro: qual progresso a pessoa busca? Evite solução (“usar app”); pense em tarefa real.
+              </p>
               <Textarea
                 id="jtbdJob"
                 placeholder="Ex: organizar as prioridades do backlog com clareza"
@@ -42,7 +45,10 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="jtbdContexto">Contexto (quando / em que situação)</Label>
+              <Label htmlFor="jtbdContexto">2. Contexto (quando / em que situação)</Label>
+              <p className="text-[11px] text-muted-foreground">
+                Em que momento da rotina isso aparece? Reuniões, prazos, pressão do cliente…
+              </p>
               <Textarea
                 id="jtbdContexto"
                 placeholder="Ex: quando estou em uma reunião de alinhamento com time e cliente"
@@ -53,7 +59,10 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
               />
             </div>
             <div className="space-y-2">
-              <Label htmlFor="jtbdSucesso">Sucesso (para quê / resultado esperado)</Label>
+              <Label htmlFor="jtbdSucesso">3. Sucesso (para quê / resultado esperado)</Label>
+              <p className="text-[11px] text-muted-foreground">
+                O que muda se o “job” for bem feito? Resultado mensurável ou sentimento claro.
+              </p>
               <Textarea
                 id="jtbdSucesso"
                 placeholder="Ex: reduzir retrabalho e acelerar decisões de escopo"
@@ -81,11 +90,17 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
       <Card>
         <CardHeader>
           <CardTitle>Contexto do problema</CardTitle>
-          <CardDescription>Preencha os campos com a visão do grupo.</CardDescription>
+          <CardDescription>
+            Ordem sugerida: <strong>Problema → Público → Dor → Impacto</strong>. Não pule: cada campo
+            alimenta o próximo.
+          </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           <div className="space-y-2">
-            <Label htmlFor="problema">Problema</Label>
+            <Label htmlFor="problema">1. Problema</Label>
+            <p className="text-[11px] text-muted-foreground">
+              Em uma frase: o que está errado hoje? Sem mencionar solução ou produto.
+            </p>
             <Textarea
               id="problema"
               placeholder="Qual problema estamos tentando resolver?"
@@ -96,7 +111,10 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="publico">Público-alvo</Label>
+            <Label htmlFor="publico">2. Público-alvo</Label>
+            <p className="text-[11px] text-muted-foreground">
+              Quem sente esse problema no dia a dia? Cargo, time, tipo de empresa.
+            </p>
             <Input
               id="publico"
               placeholder="Quem sofre com esse problema?"
@@ -105,7 +123,10 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="dor">Dor principal</Label>
+            <Label htmlFor="dor">3. Dor principal</Label>
+            <p className="text-[11px] text-muted-foreground">
+              A frustração mais forte: tempo perdido, risco, medo, retrabalho…
+            </p>
             <Textarea
               id="dor"
               placeholder="Qual a maior dor ou frustração?"
@@ -116,7 +137,10 @@ export function StepImersao({ frameworkId }: { frameworkId: FrameworkId }) {
             />
           </div>
           <div className="space-y-2">
-            <Label htmlFor="impacto">Impacto esperado</Label>
+            <Label htmlFor="impacto">4. Impacto esperado</Label>
+            <p className="text-[11px] text-muted-foreground">
+              Se resolvermos bem, o que melhora para negócio e para o usuário?
+            </p>
             <Textarea
               id="impacto"
               placeholder="Que resultado queremos ao resolver?"
